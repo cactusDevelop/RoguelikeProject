@@ -9,6 +9,8 @@ from weapon import Weapon
 from object import Object, enemy_loot, MAX_INV_SIZE
 from fight import Fight
 
+from online_highscores import save_score_with_fallback, get_online_leaderboard, get_online_highscore
+
 
 # from getpass import getpass   Ca marche pas ses grands morts
 
@@ -66,7 +68,7 @@ def game_over(data,x:int,des:str):
 
     test_high = False
     if score > 0:
-        new_hs = save_hs(nickname, score, level)
+        new_hs = save_score_with_fallback(nickname, score, level, save_hs)
         test_high = (score == new_hs)
 
     print("\n\x1b[7m" + "=" * get_width())

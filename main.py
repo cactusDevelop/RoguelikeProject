@@ -6,6 +6,8 @@ import pygame
 from json_manager import *
 from scenes import *
 
+from online_highscores import get_online_highscore, get_online_leaderboard
+
 
 # CACHER LES MESSAGES D'ERREUR (parce que c moche)
 """import sys
@@ -26,6 +28,19 @@ def display_menu():
     if not pygame.mixer.music.get_busy():
         play_sound("menu", True)
     print("\n" + "="*5 + "MAIN MENU" + "="*20)
+
+    try:  # UPDATE IA, version 11.12.1 clean
+        online_hs = get_online_highscore()
+        if online_hs > 0:
+            print("\n " + "_" * 10)
+            print(f"| 🌍 RECORD MONDIAL : {online_hs}")
+            print("|" + "_" * 20)
+    except:
+        # Si pas de connexion, afficher le score local
+        if hs["highscore"] > 0:
+            print("\n " + "_" * 10)
+            print(f"| TOP LOCAL : {hs['highscore']}")
+            print("|" + "_" * 20)
 
     if hs["highscore"] > 0:
         print("\n " + "_"*10)
@@ -52,17 +67,28 @@ def display_menu():
         direc = input("\n > ")
     return int(direc)
 
-def show_hs():
+def show_hs(): # UPDATE IA, version 11.12.1 clean
     clear_console()
-    print("\n" + "="*get_width())
-    print(" "*(get_width()//2-7)+"TOP 10 ALL TIME")
-    print()
+    print("\n" + "=" * 30)
+    print(" " * 8 + "🏆 TOP 10 MONDIAL 🏆")
 
-    if not hs["history"]:
-        print("Aucun score...")
-    else:
-        for rank, p in enumerate(hs["history"], 1):
-            print(f"{rank:2}) {str(p['nickname'])[:20]:25} - {p['score']} pts (niveau {p['level']})")
+    try:
+        online_scores = get_online_leaderboard()
+        if not online_scores:
+            print("Aucun score en ligne...")
+        else:
+            for rank, entry in enumerate(online_scores, 1):
+                date = entry.get('date', '')[:10] if 'date' in entry else ''
+                print(f"{rank:2}) {entry['nickname']:20} - {entry['score']} pts (niveau {entry['level']}) {date}")
+    except:
+        print("⚠ Impossible de récupérer les scores en ligne")
+        print("\n--- SCORES LOCAUX ---")
+        if not hs["history"]:
+            print("Aucun score local...")
+        else:
+            for rank, entry in enumerate(hs["history"], 1):
+                print(f"{rank:2}) {entry['nickname']:20} - {entry['score']} pts (niveau {entry['level']})")
+
     input("\nRetour >")
     
 
