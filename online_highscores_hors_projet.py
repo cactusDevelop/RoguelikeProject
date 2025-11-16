@@ -26,7 +26,6 @@ import requests
 import json
 import base64
 import os
-from datetime import datetime
 
 
 # CHARGEMENT SÉCURISÉ DE LA CONFIGURATION
@@ -95,8 +94,7 @@ class OnlineHighscores:
                 print("[INFO] Création du fichier de scores en ligne...")
                 initial_data = {
                     "highscore": 0,
-                    "history": [],
-                    "last_update": datetime.now().isoformat()
+                    "history": []
                 }
                 self.create_initial_file(initial_data)
                 return initial_data
@@ -152,8 +150,7 @@ class OnlineHighscores:
             current_data["history"].append({
                 "nickname": nickname,
                 "score": int(score),
-                "level": int(level),
-                "date": datetime.now().isoformat()
+                "level": int(level)
             })
 
             current_data["history"] = sorted(
@@ -164,8 +161,6 @@ class OnlineHighscores:
 
             if score > current_data.get("highscore", 0):
                 current_data["highscore"] = score
-
-            current_data["last_update"] = datetime.now().isoformat()
 
             content = json.dumps(current_data, indent=4, ensure_ascii=False)
             encoded_content = base64.b64encode(content.encode('utf-8')).decode('utf-8')
