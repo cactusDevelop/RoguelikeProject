@@ -21,43 +21,59 @@ class Object:
         if self.effect == "new_obj":
             if len(player.inventory) >= MAX_INV_SIZE:
                 print("Inventaire plein...")
+                return True
             else:
                 new_object = rand_obj_inv(player.inventory)
                 #print(f"[DEBUG] rand_obj() : {new_object}")
                 player.inventory.append(new_object)
                 print(f"{self.name} a invoqué l'objet {new_object.name}")
+                return True
 
         elif self.effect == "heal":
             delta_pv = min(self.value, player.max_pv-player.pv)
             player.heal(self.value)
             print(f"{self.name} régénère {delta_pv} PV")
+            return True
 
         elif self.effect == "att_boost":
             def to_display():
                 print("\n" + "="*10 + "Arme à améliorer" + "="*10)
                 for i, weapon in enumerate(player.weapons):
                     print(f"[{i+1}] {weapon.name} (Att: {weapon.power})")
+                print(f"[{len(player.weapons)+1}] Retour")
             def conf(action_input):
-                return action_input.isdigit() and 0 < int(action_input) <= len(player.weapons)
+                return action_input.isdigit() and 0 < int(action_input) <= len(player.weapons) + 1
 
-            which_one = solid_input(conf, to_display)
+            which_one = int(solid_input(conf, to_display))
 
-            if player.weapons[int(which_one)-1].add_buff(self.value):
-                print(f"{self.name} augmente la puissance de {player.weapons[int(which_one)-1]} de {self.value}")
-                print(f"{player.weapons[int(which_one)-1].buff_count}/{player.weapons[int(which_one)-1].MAX_BUFFS} utilisé(s) sur cette arme")
-            else:
+            if int(which_one) == len(player.weapons) + 1:
+                print("Annulation du buff...")
+                return False
+
+            which_one -= 1
+
+            if player.weapons[which_one].buff_count >= player.weapons[which_one].MAX_BUFFS:
                 print(f"{self.name} ne peut plus être amélioré")
+                return False
+            else:
+                player.weapons[which_one].add_buff(self.value)
+                print(f"{self.name} augmente la puissance de {player.weapons[int(which_one)-1].name} de {self.value}")
+                print(f"{player.weapons[which_one].buff_count}/{player.weapons[int(which_one)-1].MAX_BUFFS} utilisé(s) sur cette arme")
+                return True
 
         elif self.effect == "shield":
             player.shield(self.value)
             print(f"{self.name} érige un bouclier ayant {self.value} PV")
+            return True
 
         elif self.effect == "mana_charge":
             player.mana_charge(self.value)
             print(f"{self.name} régénère {self.value} MANA")
+            return True
 
         else:
             print("[DEBUG] Je n'ai pas programmé cet effet")
+            return True
 
 def get_rand_obj(inv, lvl_bonus=False, lvl=1):
     if not OBJECT_BLUEPRINTS: # Fallback si le json merde
@@ -88,7 +104,7 @@ def get_rand_obj(inv, lvl_bonus=False, lvl=1):
 
     name, effect, min_value, max_value, _ = template
 
-    if lvl_bonus:
+    if lvl_bonus and effect != "mana_charge":
         bonus = lvl*5
         value = randint(min_value + bonus, max_value + bonus)
     else:

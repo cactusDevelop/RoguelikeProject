@@ -1,6 +1,6 @@
 {
     "player": {
-        "nickname": "Ps",
+        "nickname": "def",
         "pv": 100,
         "max_pv": 100,
         "stim": 300,
@@ -11,23 +11,23 @@
         "score": 0,
         "weapons_inv": {
             "weapon_slot_1": {
-                "name": "Aeaydk",
-                "power": 80,
+                "name": "Apeeaag",
+                "power": 70,
                 "stim": 70,
                 "mana": 4,
                 "buff_count": 0
             },
             "weapon_slot_2": {
-                "name": "Ytue",
-                "power": 70,
-                "stim": 80,
+                "name": "Ernnhei",
+                "power": 90,
+                "stim": 70,
                 "mana": 5,
                 "buff_count": 0
             },
             "weapon_slot_3": {
-                "name": "Tarysep",
-                "power": 70,
-                "stim": 60,
+                "name": "Elnsthl",
+                "power": 90,
+                "stim": 40,
                 "mana": 3,
                 "buff_count": 0
             }

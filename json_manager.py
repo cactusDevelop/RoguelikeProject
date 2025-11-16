@@ -84,8 +84,12 @@ def clear_save():
                 clear_dict(value)
             else:
                 dicts[key] = None
+
     clear_dict(data)
     data["used_monsters"] = []
+
+    if "weapon_slot_4" in data["player"]["weapons_inv"]:
+        del data["player"]["weapons_inv"]["weapon_slot_4"]
 
     with open("JSON/active_data.json", "w", encoding="utf-8") as write_file:
         json.dump(data, write_file, indent=4, ensure_ascii=False)

@@ -1,28 +1,16 @@
 
-import os, time
+import time
 import random
 
-from global_func import solid_input
+from global_func import *
 from musics import play_sound, stop_sound
 
 
 MAX_NAV_ITERATIONS = 30
 FADE_OUT = 3500 #ms
-MAX_ANALYSIS = 10
+MAX_ANALYSIS = 8
 MISS_CHANCE = 0.05
 
-def clear_console():
-    if os.name == "nt":
-        os.system("cls")
-    else:
-        os.system("clear")
-
-def get_width(): # La fct était déjà dans scenes.py mais je ne vx pas d'import circulaire
-    try:
-        columns = os.get_terminal_size().columns
-    except OSError:
-        columns = 80
-    return columns
 
 
 class Fight:
@@ -206,7 +194,7 @@ class Fight:
             return "Que dalle"
         if self.enemy.weakness == 1:
             self.enemy.weapon.power = max(self.enemy.weapon.power-10, 0)
-            self.weakness_turns_remaining = 3
+            self.weakness_turns_remaining = 4
             return "Enemy affaibli (-10 Att) pour 3 tours"
 
         print("[DEBUG] Big Error : le num de faiblesse n'existe pas")
@@ -232,7 +220,7 @@ class Fight:
                     print("=" * 10 + "Menu" + "=" * 10)
                     for i, option in enumerate(nav_menu):
                         if option == "Analysis":
-                            print(f"[{i + 1}] {option} ({self.analysis_count}/10)")
+                            print(f"[{i + 1}] {option} ({self.analysis_count}/{MAX_ANALYSIS})")
                         elif option == "Objects":
                             print(f"[{i + 1}] {option} ({len(player.inventory)}/6)")
                         else:
@@ -269,6 +257,7 @@ class Fight:
                             else f"Soin de {option.value} PV" if option.effect == "heal" \
                             else f"Arme améliorée de {option.value} Att" if option.effect == "att_boost" \
                             else f"Bouclier de {option.value} PV" if option.effect == "shield" \
+                            else f"Charge de {option.value} MANA" if option.effect == "mana_charge" \
                             else "[DEBUG] Effet défaillant"
                         print(f"[{i+1}] {option.name} (Effet: {effect})")
                     print(f"[{len(player.inventory) + 1}] Retour")

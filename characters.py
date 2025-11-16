@@ -17,7 +17,7 @@ class Character:
         else:
             target.pv = max(target.pv - self.weapon.power, 0)
 
-        print(f"{self.weapon.name} inflige {self.weapon.power} dégats à {target.name} ({target.pv} PV restants)")
+        print(f"""L'arme "{self.weapon.name}" inflige {self.weapon.power} dégats à {target.name} ({target.pv} PV restants)""")
 
 
 class Player(Character):
@@ -66,10 +66,10 @@ class Player(Character):
                 print("Inventaire plein...")
                 return False
             else:
-                obj.use(self)
-                if obj.effect != "new_obj":
+                check = obj.use(self)
+                if obj.effect != "new_obj" and check:
                     self.inventory.pop(obj_position) # pop or remove ?
-                return True
+                return True if check is not False else False
         else:
             print("[DEBUG] Pas d'objet")
             return False
