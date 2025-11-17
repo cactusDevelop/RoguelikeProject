@@ -17,6 +17,11 @@
             "level": 16
         },
         {
+            "nickname": "Le sauvage",
+            "score": 2200,
+            "level": 15
+        },
+        {
             "nickname": "Ez",
             "score": 1660,
             "level": 13
@@ -43,11 +48,6 @@
         },
         {
             "nickname": "azerttrezertyuytrert",
-            "score": 220,
-            "level": 4
-        },
-        {
-            "nickname": "TANKOHAN",
             "score": 220,
             "level": 4
         }
