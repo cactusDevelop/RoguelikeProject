@@ -28,6 +28,11 @@
         },
         {
             "nickname": "Cactusdev",
+            "score": 300,
+            "level": 5
+        },
+        {
+            "nickname": "Cactusdev",
             "score": 220,
             "level": 4
         },
@@ -43,11 +48,6 @@
         },
         {
             "nickname": "T-max",
-            "score": 160,
-            "level": 3
-        },
-        {
-            "nickname": "Adr",
             "score": 160,
             "level": 3
         }
