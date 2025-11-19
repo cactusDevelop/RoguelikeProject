@@ -1,34 +1,41 @@
 {
     "player": {
-        "nickname": "Joueur68",
-        "pv": 100,
-        "max_pv": 100,
-        "stim": 300,
+        "nickname": "Oui",
+        "pv": 118,
+        "max_pv": 132,
+        "stim": 500,
         "max_stim": 500,
         "mana": 10,
         "max_mana": 10,
-        "current_level": 0,
-        "score": 0,
+        "current_level": 3,
+        "score": 160,
         "weapons_inv": {
             "weapon_slot_1": {
-                "name": "Osmtnc",
-                "power": 60,
-                "stim": 90,
-                "mana": 4,
+                "name": "Eukmq",
+                "power": 70,
+                "stim": 60,
+                "mana": 3,
                 "buff_count": 0
             },
             "weapon_slot_2": {
-                "name": "Eamnsiv",
-                "power": 40,
-                "stim": 90,
-                "mana": 3,
+                "name": "Teec",
+                "power": 100,
+                "stim": 50,
+                "mana": 5,
                 "buff_count": 0
             },
             "weapon_slot_3": {
-                "name": "Nboedar",
-                "power": 60,
-                "stim": 70,
+                "name": "Tambb",
+                "power": 70,
+                "stim": 60,
                 "mana": 3,
+                "buff_count": 0
+            },
+            "weapon_slot_4": {
+                "name": "Mange tes morts",
+                "power": 999,
+                "stim": 999,
+                "mana": 0,
                 "buff_count": 0
             }
         },
@@ -37,9 +44,22 @@
                 "name": "Sac des abîmes",
                 "effect": "new_obj",
                 "value": 0
+            },
+            "object_slot_2": {
+                "name": "Grande popo de soin",
+                "effect": "heal",
+                "value": 124
+            },
+            "object_slot_3": {
+                "name": "Vol-au-vent",
+                "effect": "mana_ult_charge",
+                "value": 10
             }
         }
     },
-    "used_monsters": [],
-    "cheat": null
+    "used_monsters": [
+        "Ken Hasselmanette",
+        "Boegart Hangar"
+    ],
+    "cheat": true
 }

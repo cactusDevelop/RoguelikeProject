@@ -17,6 +17,7 @@ incognito = " \033[1;32m???\033[0m"
 red = "\033[1;31m"
 green = "\033[1;32m"
 cyan = "\033[1;36m"
+blue = "\033[1;94m"
 
 #starters = generate_starters() A cause de random.seed()
 OBJ_STARTER = Object("Sac des abîmes", "new_obj", 0)
@@ -106,21 +107,28 @@ def launch_cutscene(data):
         "\n"
         "\n   Pour continuer : Appuyer sur -> \033[1mENTER <- \033[0;32m"))
     wait_input()
-    print((
-        "\n\n\n"
-        "\n"
-        "\n  ██████  ▒█████   ██▒   █▓▓█████  ██▀███  ▓█████  ██▓  ▄████  ███▄    █   ██████      █████▒▄▄▄       ██▓     ██▓    ",
-        "\n▒██    ▒ ▒██▒  ██▒▓██░   █▒▓█   ▀ ▓██ ▒ ██▒▓█   ▀ ▓██▒ ██▒ ▀█▒ ██ ▀█   █ ▒██    ▒    ▓██   ▒▒████▄    ▓██▒    ▓██▒    ",
-        "\n░ ▓██▄   ▒██░  ██▒ ▓██  █▒░▒███   ▓██ ░▄█ ▒▒███   ▒██▒▒██░▄▄▄░▓██  ▀█ ██▒░ ▓██▄      ▒████ ░▒██  ▀█▄  ▒██░    ▒██░    ",
-        "\n  ▒   ██▒▒██   ██░  ▒██ █░░▒▓█  ▄ ▒██▀▀█▄  ▒▓█  ▄ ░██░░▓█  ██▓▓██▒  ▐▌██▒  ▒   ██▒   ░▓█▒  ░░██▄▄▄▄██ ▒██░    ▒██░    ",
-        "\n▒██████▒▒░ ████▓▒░   ▒▀█░  ░▒████▒░██▓ ▒██▒░▒████▒░██░░▒▓███▀▒▒██░   ▓██░▒██████▒▒   ░▒█░    ▓█   ▓██▒░██████▒░██████▒",
-        "\n▒ ▒▓▒ ▒ ░░ ▒░▒░▒░    ░ ▐░  ░░ ▒░ ░░ ▒▓ ░▒▓░░░ ▒░ ░░▓   ░▒   ▒ ░ ▒░   ▒ ▒ ▒ ▒▓▒ ▒ ░    ▒ ░    ▒▒   ▓▒█░░ ▒░▓  ░░ ▒░▓  ░",
-        "\n░ ░▒  ░ ░  ░ ▒ ▒░    ░ ░░   ░ ░  ░  ░▒ ░ ▒░ ░ ░  ░ ▒ ░  ░   ░ ░ ░░   ░ ▒░░ ░▒  ░ ░    ░       ▒   ▒▒ ░░ ░ ▒  ░░ ░ ▒  ░",
-        "\n░  ░  ░  ░ ░ ░ ▒       ░░     ░     ░░   ░    ░    ▒ ░░ ░   ░    ░   ░ ░ ░  ░  ░      ░ ░     ░   ▒     ░ ░     ░ ░   ",
-        "\n      ░      ░ ░        ░     ░  ░   ░        ░  ░ ░        ░          ░       ░                  ░  ░    ░  ░    ░  ░",
-        "\n                       ░                                                                                              "
-        "\n\033[0m"))
-    time.sleep(1)
+
+    play_sound("intro")
+    title = center_txt((
+        f"{blue}\n",
+        "\n",
+        "\n",
+        "\n",
+        "  ██████  ▒█████   ██▒   █▓▓█████  ██▀███  ▓█████  ██▓  ▄████  ███▄    █   ██████      █████▒▄▄▄       ██▓     ██▓    ",
+        "▒██    ▒ ▒██▒  ██▒▓██░   █▒▓█   ▀ ▓██ ▒ ██▒▓█   ▀ ▓██▒ ██▒ ▀█▒ ██ ▀█   █ ▒██    ▒    ▓██   ▒▒████▄    ▓██▒    ▓██▒    ",
+        "░ ▓██▄   ▒██░  ██▒ ▓██  █▒░▒███   ▓██ ░▄█ ▒▒███   ▒██▒▒██░▄▄▄░▓██  ▀█ ██▒░ ▓██▄      ▒████ ░▒██  ▀█▄  ▒██░    ▒██░    ",
+        "  ▒   ██▒▒██   ██░  ▒██ █░░▒▓█  ▄ ▒██▀▀█▄  ▒▓█  ▄ ░██░░▓█  ██▓▓██▒  ▐▌██▒  ▒   ██▒   ░▓█▒  ░░██▄▄▄▄██ ▒██░    ▒██░    ",
+        "▒██████▒▒░ ████▓▒░   ▒▀█░  ░▒████▒░██▓ ▒██▒░▒████▒░██░░▒▓███▀▒▒██░   ▓██░▒██████▒▒   ░▒█░    ▓█   ▓██▒░██████▒░██████▒",
+        "▒ ▒▓▒ ▒ ░░ ▒░▒░▒░    ░ ▐░  ░░ ▒░ ░░ ▒▓ ░▒▓░░░ ▒░ ░░▓   ░▒   ▒ ░ ▒░   ▒ ▒ ▒ ▒▓▒ ▒ ░    ▒ ░    ▒▒   ▓▒█░░ ▒░▓  ░░ ▒░▓  ░",
+        "░ ░▒  ░ ░  ░ ▒ ▒░    ░ ░░   ░ ░  ░  ░▒ ░ ▒░ ░ ░  ░ ▒ ░  ░   ░ ░ ░░   ░ ▒░░ ░▒  ░ ░    ░       ▒   ▒▒ ░░ ░ ▒  ░░ ░ ▒  ░",
+        "░  ░  ░  ░ ░ ░ ▒       ░░     ░     ░░   ░    ░    ▒ ░░ ░   ░    ░   ░ ░ ░  ░  ░      ░ ░     ░   ▒     ░ ░     ░ ░   ",
+        "      ░      ░ ░        ░     ░  ░   ░        ░  ░ ░        ░          ░       ░                  ░  ░    ░  ░    ░  ░",
+        "                       ░                                                                                              ",
+        "\n",
+        "\033[0m"))
+    slow_print(title, 0.2)
+    wait_input()
+
     clear_console()
     play_sound("wood-creak")
     quick_print((
@@ -128,28 +136,30 @@ def launch_cutscene(data):
         "Un homme tout de noir vêtu vous tend un parchemin.",
         f"\n{incognito} : « Complétez ceci »"))
     play_sound("paper-collect")
-    print(
-        "\n               _________________________________________________________________"
-        "\n              |                                                                 |"
-        "\n              |                                                                 |"
-        "\n              |   Vous avez eu l’exceptionnellement incroyable chance           |"
-        "\n              |   d’être sélectionné pour prendre part au programme *XXXXX*.    |"
-        "\n              |                                                                 |")
+    slow_print(center_txt((
+        " _________________________________________________________________ ",
+        "|                                                                 |",
+        "|                                                                 |",
+        "|   Vous avez eu l’exceptionnellement incroyable chance           |",
+        "|   d’être sélectionné pour prendre part au programme *XXXXX*.    |",
+        "|                                                                 |")), 0.2)
     wait_input()
     play_sound("paper-rustle")
-    print("              |                                                                 |"
-        "\n              |   - Toute atteinte à la sécurité du participant durant le       |"
-        "\n              |   programme relève de son entière responsabilité.               |"
-        "\n              |   - Le participant n’est pas autorisé à interrompre le          |"
-        "\n              |   programme avant la fin.                                       |")
+    slow_print(center_txt((
+        "|                                                                 |",
+        "|   - Toute atteinte à la sécurité du participant durant le       |",
+        "|   programme relève de son entière responsabilité.               |",
+        "|   - Le participant n’est pas autorisé à interrompre le          |",
+        "|   programme avant la fin.                                       |")), 0.2)
     wait_input()
     play_sound("paper-rustle")
-    print("              |                                                                 |"
-        "\n              |   Je soussigné (nom, prénom)...............................     |"
-        "\n              |   accepte en toute connaissance de cause, les conditions        |"
-        "\n              |   présentée cfr supra.                                          |"
-        "\n              |                                                                 |"
-        "\n              |_________________________________________________________________|")
+    slow_print(center_txt((
+        "|                                                                 |",
+        "|   Je soussigné (nom, prénom)...............................     |",
+        "|   accepte en toute connaissance de cause, les conditions        |",
+        "|   présentée cfr supra.                                          |",
+        "|                                                                 |",
+        "|_________________________________________________________________|")), 0.05)
 
     print(f"\n{incognito} : « Avez-vous lu et accepté ce contrat » ")
 
@@ -234,8 +244,11 @@ def launch_starters_scene(data):
     if data.get("cheat", False):
         print(f"\n{incognito} : « Tiens tiens tiens... tu as triché ? Bah tiens chacal »")
         wait_input()
+
         selected_weapons.append(CHEAT_WEAPON)
         play_sound("bell")
+        print(f""" > Arme "{CHEAT_WEAPON.name}" récupérée""")
+        print()
 
     for n, weapon in enumerate(selected_weapons):
         data["player"]["weapons_inv"][f"weapon_slot_{n+1}"]={
@@ -282,6 +295,7 @@ def launch_keep_fighting(difficulty, player, used_monsters):
         player.mana = player.max_mana//2
 
     else:
+        print()
         print(random.choice(RANDOM_LINES))
 
         available_enemies = []

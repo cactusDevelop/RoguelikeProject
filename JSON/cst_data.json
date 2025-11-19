@@ -17,7 +17,8 @@
     "Loulou Croix-V-Baton",
     "Louis VII",
     "Louis IIV"
-  ],"boss_names": [
+  ],
+  "boss_names": [
     "Dimitri",
     "Martini"
   ],
@@ -37,8 +38,8 @@
     ["Buff divin", "att_boost", 40, 80, 0.075],
     ["P'tit bouclier", "shield", 20, 40, 0.175],
     ["Ama-no-Iwato", "shield", 40, 80, 0.075],
-    ["Vol-au-vent", "mana_charge", 5, 10, 0.175],
-    ["Carbonade", "mana_charge", 10, 20, 0.075]
+    ["Vol-au-vent", "mana_ult_charge", 5, 10, 0.175],
+    ["Carbonade", "mana_ult_charge", 10, 20, 0.075]
   ],
   "rand_lines": [
     "Tu t'enfonces dans les ténèbres à la recherche de réponses...",
@@ -54,7 +55,7 @@
       "type": "attack",
       "value": 10,
       "duration": 3,
-      "message": "Ennemi affaibli (-10 Att) pour 3 tours"
+      "message": "Ennemi affaibli (10% Att) pour 3 tours"
     },
     "2": {
       "type": "heal",

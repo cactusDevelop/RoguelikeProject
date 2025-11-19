@@ -1,5 +1,6 @@
 
 from random import choice
+from musics import play_sound
 
 
 ULT_COEFFICIENT = 5
@@ -12,13 +13,12 @@ class Character:
         self.weapon = None
 
     def attack(self, target):
-        if hasattr(target, "calc_dmg"): # Joueur
-            target.calc_dmg(self.weapon.power)
-            print(f"""L'arme "{self.weapon.name}" inflige {self.weapon.power} dégats à "{target.name}" ({target.pv} PV restants)""") # COULOEUR EN ANSI ICI !!!!
-
-        else: # Ennemi
+        if hasattr(target, "calc_dmg"):
+            return target.calc_dmg(self.weapon.power, self.weapon.name)
+        else:
             target.pv = max(target.pv - self.weapon.power, 0)
             print(f""""{self.weapon.name}" inflige {self.weapon.power} dégats à "{target.name}" ({target.pv} PV restants)""")
+            return None
 
 
 class Player(Character):
@@ -37,7 +37,7 @@ class Player(Character):
         self.stim = min(self.stim+x, self.max_stim)
         self.can_ult = (self.stim == self.max_stim)
 
-    def mana_charge(self, x):
+    def mana_ult_charge(self, x):
         self.mana = min(self.mana + x, self.max_mana)
 
     def ult(self, target):
@@ -79,23 +79,21 @@ class Player(Character):
         self.shield_pv = max(self.shield_pv, s_pv) # Bouclier fort écrase bouclier faible
         print(f"Bouclier de {self.shield_pv} Pv actif")
 
-    def calc_dmg(self, damage):
+    def calc_dmg(self, damage, weapon_name="Attaque ennemie"):
         if self.shield_pv > 0:
             if damage >= self.shield_pv:
                 self.shield_pv = 0
-                print(f"Bouclier détruit")
+                print(f""""{weapon_name}" détruit votre Bouclier""")
+                play_sound("shield-drop")
             else:
-                self.shield_pv = max(self.shield_pv - damage, 0)
+                self.shield_pv = self.shield_pv - damage
+                print(f""""{weapon_name}" inflige {damage} dégats au bouclier ({self.shield_pv} PV bouclier restants)""")
+                play_sound("shield")
 
-            """if damage <= self.shield_pv:
-                self.shield_pv -= damage
-            else:
-                remaining_dmg = damage - self.shield_pv
-                self.shield_pv = 0
-                self.pv = max(self.pv - remaining_dmg, 0)
-                print(f"{remaining_dmg} dégats traversent le bouclier ({self.pv} PV restants)")"""
         else:
             self.pv = max(self.pv - damage, 0)
+            print(f""""{weapon_name}" inflige {damage} dégats à "{self.name}" ({self.pv} PV restants)""")
+            play_sound("monster-attack")
 
 
 
@@ -106,7 +104,7 @@ class Monster(Character):
     BODY = ["||", "| |", "//\\\\"]
     FEET = ["'''", "^  ^", "{} {}"]
 
-    def draw_ascii(self):
+    def draw_ascii(self): # Implémenter ?
         horns = choice(self.HORNS)
         face = choice(self.FACE)
         teeth = choice(self.TEETH)

@@ -60,7 +60,7 @@ def display_menu():
     direc = solid_input(conf_m, to_display_m)
 
     if direc == CHEAT_CODE:
-        print("\n\033[42m >>> CHEAT MODE ACTIVED <<<\033[0m")
+        print("\n\033[42m >>> CHEAT MODE ACTIVED <<< \033[0m")
         play_sound("win")
         time.sleep(2.5)
         data["cheat"] = True

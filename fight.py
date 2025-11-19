@@ -54,7 +54,7 @@ class Fight:
                 play_sound("sword-finish")
                 time.sleep(1)
                 play_sound("win")
-                time.sleep(FADE_OUT/1000-1)
+                time.sleep(FADE_OUT/1000)
                 return gagne # Boléen
             elif gagne and p_turn_conclu != "Att":
                 stop_sound(FADE_OUT)
@@ -75,7 +75,7 @@ class Fight:
 
 
     def player_turn(self):
-        self.player.mana_charge(1)
+        self.player.mana_ult_charge(1)
 
         instruction, value = self.nav(self.player)
 
@@ -90,7 +90,7 @@ class Fight:
 
             self.player.mana -= equiped_w.mana
 
-            self.player.attack(self.enemy) # Parce qu'on a décidé d'attaquer dès le choix de l'arme
+            self.player.attack(self.enemy)
             self.player.charge(self.player.weapon.stim)
 
             return "Att"
@@ -131,13 +131,12 @@ class Fight:
 
         if random.random() < MISS_CHANCE:
             play_sound("miss-swing")
-            print(f"{self.enemy.name} rate lamentablement son attaque")
+            print(f""""{self.enemy.name}" rate lamentablement son attaque""")
         elif self.enemy.weapon.power == 0:
             self.enemy.attack(self.player)
             play_sound("miss-swing")
         else:
             self.enemy.attack(self.player)
-            play_sound("monster-attack")
 
         input("Continuer...")
         clear_console()
@@ -204,7 +203,7 @@ class Fight:
         w_message = weakness_data["message"]
 
         if w_type == "attack":
-            self.enemy.weapon.power = max(self.enemy.weapon.power - w_value, 0)
+            self.enemy.weapon.power = max(self.enemy.weapon.power - int(self.enemy.weapon.original_power*(w_value/100)), 0)
             self.weakness_turns_remaining = w_duration + 1
             return w_message
 
@@ -274,7 +273,7 @@ class Fight:
                             else f"Soin de {option.value} PV" if option.effect == "heal" \
                             else f"Arme améliorée de {option.value} Att" if option.effect == "att_boost" \
                             else f"Bouclier de {option.value} PV" if option.effect == "shield" \
-                            else f"Charge de {option.value} MANA" if option.effect == "mana_charge" \
+                            else f"Charge de {option.value} MANA" if option.effect == "mana_ult_charge" \
                             else "[DEBUG] Effet défaillant"
 
                         offset = " " * (max(len(o.name) for o in player.inventory)+2-len(option.name))

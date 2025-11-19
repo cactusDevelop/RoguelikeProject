@@ -54,3 +54,13 @@ def wait_input():
     else:
         input() # Je prends pas le risque sur Linux/IOS
     print()
+
+
+def center_txt(txt:tuple):
+    centered = []
+
+    for l in txt:
+        line = " "*((get_width() - len(l))//2) + str(l) + "\n"
+        centered.append(line)
+
+    return tuple(centered)

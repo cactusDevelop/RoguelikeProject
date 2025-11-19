@@ -21,10 +21,16 @@ class Object:
 
     def use(self, player): # Ajouter un para enemy=None si un obj a des effets sur enemy
         if self.effect == "new_obj":
-            if len(player.inventory) >= MAX_INV_SIZE:
+            if player.mana < 3:
+                print("Pas assez de MANA")
+                return False
+
+            elif len(player.inventory) >= MAX_INV_SIZE:
                 print("Inventaire plein...")
                 return True
+
             else:
+                player.mana -= 3
                 new_object = rand_obj_inv(player.inventory)
                 #print(f"[DEBUG] rand_obj() : {new_object}")
                 player.inventory.append(new_object)
@@ -68,9 +74,11 @@ class Object:
             print(f"{self.name} érige un bouclier ayant {self.value} PV")
             return True
 
-        elif self.effect == "mana_charge":
-            player.mana_charge(self.value)
-            print(f"{self.name} régénère {self.value} MANA")
+        elif self.effect == "mana_ult_charge":
+            player.mana_ult_charge(self.value)
+            player.charge(self.value*10)
+
+            print(f"{self.name} recharge de {self.value*10} ULT et {self.value} MANA")
             return True
 
         else:
@@ -105,7 +113,7 @@ def get_rand_obj(inv, lvl_bonus=False, lvl=1):
     template = choices(available_obj, weights=norm_prob, k=1)[0]
     name, effect, min_value, max_value, _ = template
 
-    if lvl_bonus and effect != "mana_charge":
+    if lvl_bonus and effect != "mana_ult_charge":
         bonus = int(min_value*OBJECT_SCALE**(lvl/OBJECT_SCALE_SLOWDOWN))
         value = randint(min_value + bonus, max_value + bonus)
     else:
