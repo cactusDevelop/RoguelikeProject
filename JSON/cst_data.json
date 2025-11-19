@@ -39,5 +39,34 @@
     ["Ama-no-Iwato", "shield", 40, 80, 0.075],
     ["Vol-au-vent", "mana_charge", 5, 10, 0.175],
     ["Carbonade", "mana_charge", 10, 20, 0.075]
-  ]
+  ],
+  "rand_lines": [
+    "Tu t'enfonces dans les ténèbres à la recherche de réponses...",
+    "Tu t'allumes une clope et te rappelles que tu ne fumes pas...",
+    "Tu sous-estimes le temps de prépa du prochain labo..."
+  ],
+  "weaknesses": {
+    "0": {
+      "type": "none",
+      "message": "Que dalle"
+    },
+    "1": {
+      "type": "attack",
+      "value": 10,
+      "duration": 3,
+      "message": "Ennemi affaibli (-10 Att) pour 3 tours"
+    },
+    "2": {
+      "type": "heal",
+      "value": 10,
+      "duration": 0,
+      "message": "Ennemi te guéri ?!"
+    },
+    "3": {
+      "type": "attack",
+      "value": 1000,
+      "duration": 2,
+      "message": "Ennemi étourdi pour 2 tours"
+    }
+  }
 }

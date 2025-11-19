@@ -14,11 +14,11 @@ class Character:
     def attack(self, target):
         if hasattr(target, "calc_dmg"): # Joueur
             target.calc_dmg(self.weapon.power)
-            print(f"""L'arme "{self.weapon.name}" inflige {self.weapon.power} dégats à {target.name} ({target.pv} PV restants)""")
+            print(f"""L'arme "{self.weapon.name}" inflige {self.weapon.power} dégats à "{target.name}" ({target.pv} PV restants)""") # COULOEUR EN ANSI ICI !!!!
 
         else: # Ennemi
             target.pv = max(target.pv - self.weapon.power, 0)
-            print(f""""{self.weapon.name}" inflige {self.weapon.power} dégats à {target.name} ({target.pv} PV restants)""")
+            print(f""""{self.weapon.name}" inflige {self.weapon.power} dégats à "{target.name}" ({target.pv} PV restants)""")
 
 
 class Player(Character):
@@ -81,7 +81,12 @@ class Player(Character):
 
     def calc_dmg(self, damage):
         if self.shield_pv > 0:
-            self.shield_pv = max(self.shield_pv - damage, 0)
+            if damage >= self.shield_pv:
+                self.shield_pv = 0
+                print(f"Bouclier détruit")
+            else:
+                self.shield_pv = max(self.shield_pv - damage, 0)
+
             """if damage <= self.shield_pv:
                 self.shield_pv -= damage
             else:

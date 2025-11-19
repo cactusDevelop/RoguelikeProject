@@ -54,7 +54,7 @@ def display_menu():
         print(" [0] Quitter :‹")
 
     def conf_m(action_input):
-        return action_input in ["0", "1", "2", "3", "4", CHEAT_CODE]
+        return action_input.lower() in ["0", "1", "2", "3", "4", CHEAT_CODE]
 
     clear_console()
     direc = solid_input(conf_m, to_display_m)
@@ -62,7 +62,7 @@ def display_menu():
     if direc == CHEAT_CODE:
         print("\n\033[42m >>> CHEAT MODE ACTIVED <<<\033[0m")
         play_sound("win")
-        time.sleep(1)
+        time.sleep(2.5)
         data["cheat"] = True
         return 1
 

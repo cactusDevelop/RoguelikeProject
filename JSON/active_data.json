@@ -1,6 +1,6 @@
 {
     "player": {
-        "nickname": "Joueur37",
+        "nickname": "Joueur68",
         "pv": 100,
         "max_pv": 100,
         "stim": 300,
@@ -11,24 +11,24 @@
         "score": 0,
         "weapons_inv": {
             "weapon_slot_1": {
-                "name": "Vsrktmi",
+                "name": "Osmtnc",
                 "power": 60,
-                "stim": 80,
+                "stim": 90,
                 "mana": 4,
                 "buff_count": 0
             },
             "weapon_slot_2": {
-                "name": "Eeeroip",
-                "power": 80,
-                "stim": 70,
-                "mana": 5,
+                "name": "Eamnsiv",
+                "power": 40,
+                "stim": 90,
+                "mana": 3,
                 "buff_count": 0
             },
             "weapon_slot_3": {
-                "name": "Etteu",
-                "power": 50,
-                "stim": 90,
-                "mana": 4,
+                "name": "Nboedar",
+                "power": 60,
+                "stim": 70,
+                "mana": 3,
                 "buff_count": 0
             }
         },

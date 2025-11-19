@@ -1,5 +1,5 @@
-
-import random, time
+import json
+import random
 
 from json_manager import get_cst_names, save_hs, clear_save
 from weapon import generate_starters
@@ -9,13 +9,15 @@ from weapon import Weapon, gen_boss_weapon
 from object import Object, enemy_loot, MAX_INV_SIZE
 from fight import Fight
 from global_func import *
-
 from online_highscores_hors_projet import save_score_with_fallback
 
 
-# from getpass import getpass   Ca marche pas ses grands morts
 
 incognito = " \033[1;32m???\033[0m"
+red = "\033[1;31m"
+green = "\033[1;32m"
+cyan = "\033[1;36m"
+
 #starters = generate_starters() A cause de random.seed()
 OBJ_STARTER = Object("Sac des abîmes", "new_obj", 0)
 CHEAT_WEAPON = Weapon("Mange tes morts", 999, 999, 0, 0)
@@ -25,6 +27,11 @@ PLAYER_SCALE = 1.15
 MONSTER_SCALE = 1.2
 BOSS_PV = 5
 BOSS_ATT = 2
+
+with open("JSON/cst_data.json", "r", encoding="utf-8") as read_file:
+    cst = json.load(read_file)
+    RANDOM_LINES = cst.get("rand_lines", ["\nTu t'enfonces dans les ténèbres à la recherche d'une réponse..."])
+    WEAKNESSES = cst.get("weaknesses", {})
 
 
 MAX_NAME_SIZE = get_width()//3
@@ -36,11 +43,6 @@ def clean_nick(nickname):
         return nickname[:MAX_NAME_SIZE-3]+"..."
     return nickname
 
-def slow_print(txt: tuple):
-    for _ in txt:
-        print(_, end="")
-        input()
-
 def choose_starter(s_list):
     def to_display():
         left_offset = 8
@@ -51,9 +53,6 @@ def choose_starter(s_list):
 
     choice = solid_input(conf, to_display)
     return s_list[int(choice)-1]
-
-def player_speaks(pseudo):
-    return f" \033[1;36m{pseudo}\033[0m"
 
 def game_over(data,x:int,des:str):
     clear_console()
@@ -68,8 +67,8 @@ def game_over(data,x:int,des:str):
         new_hs = save_score_with_fallback(nickname, score, level, save_hs) # [BALISE ONLINE HIGHSCORES]
         test_high = (score == new_hs)
 
-    print("\n\x1b[7m" + "=" * get_width())
-    print(f"\x1b[1m  GAME OVER\x1b[0;7m" + " "*(get_width()-11))
+    print("\n\033[7m" + "=" * get_width())
+    print(f"\033[1m  GAME OVER\033[0;7m" + " "*(get_width()-11))
     print(f"  Fin {x} - {des}" + " " * (get_width()-9-len(str(x))-len(des)))
     print(f"  Score - {score}" + " " * (get_width()-9-len(str(x))-len(str(score))))
 
@@ -77,7 +76,7 @@ def game_over(data,x:int,des:str):
         print(f" >>> NEW HIGHSCORE <<<" + " "*(get_width()-22))
 
     print(" " * get_width() + "\n" + " " * get_width())
-    print("=" * get_width() + "\x1b[0m")
+    print("=" * get_width() + "\033[0m")
     #dump_json(data)
     clear_save()
     input("\nAppuyez sur ENTER pour revenir à l'écran d'accueil")
@@ -92,7 +91,7 @@ def launch_cutscene(data):
     play_sound("tense-bgm", True)
 
     print((
-        "\n\033[32m"
+        f"\n{green}"
         "\n          ⣠⣾⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷"
         "\n   ⠀⠀⠀⠀ ⠀⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿"
         "\n   ⠀⠀⠀⠀⠀ ⠀⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿"
@@ -106,52 +105,25 @@ def launch_cutscene(data):
         "\n   ⢿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⡿"
         "\n"
         "\n   Pour continuer : Appuyer sur -> \033[1mENTER <- \033[0;32m"))
-    input()
+    wait_input()
     print((
         "\n\n\n"
-        "\n           _____  ___________             ____        _______     _______   _____    _____     "
-        "\n      _____\    \_\          \        ____\_  \__    /      /|   |\      \ |\    \   \    \    "
-        "\n     /     /|     |\    /\    \      /     /     \  /      / |   | \      \ \\\\    \   |    |   "
-        "\n    /     / /____/| |   \_\    |    /     /\      ||      /  |___|  \      | \\\\    \  |    |   "
-        "\n   |     | |____|/  |      ___/    |     |  |     ||      |  |   |  |      |  \|    \ |    |   "
-        "\n   |     |  _____   |      \  ____ |     |  |     ||       \ \   / /       |   |     \|    |   "
-        "\n   |\     \|\    \ /     /\ \/    \|     | /     /||      |\\\\/   \//|      |  /     /\      \  "
-        "\n   | \_____\|    |/_____/ |\______||\     \_____/ ||\_____\|\_____/|/_____/| /_____/ /______/| "
-        "\n   | |     /____/||     | | |     || \_____\   | / | |     | |   | |     | ||      | |     | | "
-        "\n    \|_____|    |||_____|/ \|_____| \ |    |___|/   \|_____|\|___|/|_____|/ |______|/|_____|/  "
-        "\n           |____|/                   \|____|                                                   "
-        "\n                                                                                               "))
-    time.sleep(0.8)
-    print((
-        "\n           ___________    ______   _____                _____    ________    ________          "
-        "\n          /           \   \     \  \    \          _____\    \  /        \  /        \         "
-        "\n         /    _   _    \   \    |  |    |         /    / \    ||\         \/         /|        "
-        "\n        /    //   \\\\    \   |   |  |    |        |    |  /___/|| \            /\____/ |        "
-        "\n       /    //     \\\\    \  |    \_/   /|     ____\    \ |   |||  \______/\   \     | |        "
-        "\n      /     \\\\_____//     \ |\         \|    /    /\    \|___|/ \ |      | \   \____|/         "
-        "\n     /       \ ___ /       \| \         \__ |    |/ \    \       \|______|  \   \              "
-        "\n    /________/|   |\________\\\\ \_____/\    \|\____\ /____/|               \  \___\             "
-        "\n   |        | |   | |        |\ |    |/___/|| |   ||    | |                \ |   |             "
-        "\n   |________|/     \|________| \|____|   | | \|___||____|/                  \|___|             "
-        "\n                                     |___|/                                                    "))
-    time.sleep(0.8)
-    print((
-        "\n          _____                                                                                "
-        "\n    ____  \    \      _____       _____           _____                                        "
-        "\n    \   \ /____/|   /      |_    |\    \         |\    \                                       "
-        "\n     |  |/_____|/  /         \    \\\\    \         \\\\    \                                      "
-        "\n     |  |    ___  |     /\    \    \\\\    \         \\\\    \                                     "
-        "\n     |   \__/   \ |    |  |    \    \|    | ______  \|    | ______                             "
-        "\n    /      /\___/||     \/      \    |    |/      \  |    |/      \                            "
-        "\n   /      /| | | ||\      /\     \   /            |  /            |                            "
-        "\n   |_____| /\|_|/ | \_____\ \_____\ /_____/\_____/| /_____/\_____/|                            "
-        "\n   |     |/       | |     | |     ||      | |    |||      | |    ||                            "
-        "\n   |_____|         \|_____|\|_____||______|/|____|/|______|/|____|/                            "
+        "\n"
+        "\n  ██████  ▒█████   ██▒   █▓▓█████  ██▀███  ▓█████  ██▓  ▄████  ███▄    █   ██████      █████▒▄▄▄       ██▓     ██▓    ",
+        "\n▒██    ▒ ▒██▒  ██▒▓██░   █▒▓█   ▀ ▓██ ▒ ██▒▓█   ▀ ▓██▒ ██▒ ▀█▒ ██ ▀█   █ ▒██    ▒    ▓██   ▒▒████▄    ▓██▒    ▓██▒    ",
+        "\n░ ▓██▄   ▒██░  ██▒ ▓██  █▒░▒███   ▓██ ░▄█ ▒▒███   ▒██▒▒██░▄▄▄░▓██  ▀█ ██▒░ ▓██▄      ▒████ ░▒██  ▀█▄  ▒██░    ▒██░    ",
+        "\n  ▒   ██▒▒██   ██░  ▒██ █░░▒▓█  ▄ ▒██▀▀█▄  ▒▓█  ▄ ░██░░▓█  ██▓▓██▒  ▐▌██▒  ▒   ██▒   ░▓█▒  ░░██▄▄▄▄██ ▒██░    ▒██░    ",
+        "\n▒██████▒▒░ ████▓▒░   ▒▀█░  ░▒████▒░██▓ ▒██▒░▒████▒░██░░▒▓███▀▒▒██░   ▓██░▒██████▒▒   ░▒█░    ▓█   ▓██▒░██████▒░██████▒",
+        "\n▒ ▒▓▒ ▒ ░░ ▒░▒░▒░    ░ ▐░  ░░ ▒░ ░░ ▒▓ ░▒▓░░░ ▒░ ░░▓   ░▒   ▒ ░ ▒░   ▒ ▒ ▒ ▒▓▒ ▒ ░    ▒ ░    ▒▒   ▓▒█░░ ▒░▓  ░░ ▒░▓  ░",
+        "\n░ ░▒  ░ ░  ░ ▒ ▒░    ░ ░░   ░ ░  ░  ░▒ ░ ▒░ ░ ░  ░ ▒ ░  ░   ░ ░ ░░   ░ ▒░░ ░▒  ░ ░    ░       ▒   ▒▒ ░░ ░ ▒  ░░ ░ ▒  ░",
+        "\n░  ░  ░  ░ ░ ░ ▒       ░░     ░     ░░   ░    ░    ▒ ░░ ░   ░    ░   ░ ░ ░  ░  ░      ░ ░     ░   ▒     ░ ░     ░ ░   ",
+        "\n      ░      ░ ░        ░     ░  ░   ░        ░  ░ ░        ░          ░       ░                  ░  ░    ░  ░    ░  ░",
+        "\n                       ░                                                                                              "
         "\n\033[0m"))
     time.sleep(1)
     clear_console()
     play_sound("wood-creak")
-    slow_print((
+    quick_print((
         "\nVous vous réveillez dans un pièce sombre qui vous est inconnue.",
         "Un homme tout de noir vêtu vous tend un parchemin.",
         f"\n{incognito} : « Complétez ceci »"))
@@ -163,14 +135,14 @@ def launch_cutscene(data):
         "\n              |   Vous avez eu l’exceptionnellement incroyable chance           |"
         "\n              |   d’être sélectionné pour prendre part au programme *XXXXX*.    |"
         "\n              |                                                                 |")
-    input()
+    wait_input()
     play_sound("paper-rustle")
     print("              |                                                                 |"
         "\n              |   - Toute atteinte à la sécurité du participant durant le       |"
         "\n              |   programme relève de son entière responsabilité.               |"
         "\n              |   - Le participant n’est pas autorisé à interrompre le          |"
         "\n              |   programme avant la fin.                                       |")
-    input()
+    wait_input()
     play_sound("paper-rustle")
     print("              |                                                                 |"
         "\n              |   Je soussigné (nom, prénom)...............................     |"
@@ -193,23 +165,23 @@ def launch_cutscene(data):
         agreement = solid_input(conf,to_display)
 
     if agreement.lower() == "non":
-        pseudo = clean_nick(input("\nPseudo > \033[1;36m"))
+        pseudo = clean_nick(input(f"\nPseudo > {cyan}"))
         data["player"]["nickname"] = pseudo
 
-        print(f"\n{player_speaks(pseudo)} : « Va te faire foutre. »")
-        input()
+        print(f"\n {cyan + pseudo}\033[0m : « Va te faire foutre. »")
+        wait_input()
         play_sound("laughter")
         print(f"{incognito} : « Pensez-vous avoir le choix ? »")
         time.sleep(2)
         return False
 
     else:
-        pseudo = clean_nick(input("\nSignature (pseudo) > \033[1;36m"))
+        pseudo = clean_nick(input(f"\nSignature (pseudo) > {cyan}"))
         play_sound("handwriting")
         play_sound("door-shut")
         data["player"]["nickname"] = pseudo
 
-        slow_print((
+        quick_print((
             "\n\033[0mIl vous voile les yeux de force. Vous entendez le claquement sourd de la porte métallique.",
             "Une nausée commence à vous prendre... Votre tête brule... Vos tympans bourdonnent...",
             "Vous vous sentez tel un Ampèremètre branché en parallèle...",
@@ -226,11 +198,11 @@ def launch_starters_scene(data):
     starters = generate_starters()
     nickname = data["player"]["nickname"]
 
-    slow_print((
-                f"\n{player_speaks(nickname)} : « ... Qu’est que... Où suis-je tombé ? »",
+    quick_print((
+                f"\n {cyan + nickname}\033[0m : « ... Qu’est que... Où suis-je tombé ? »",
                 "\nDevant vous, se trouve plusieurs armes difformes éparpillées sur le sol.",
                 f"\n{incognito} : « Bienvenue dans la tête du Roi, agent {nickname} »",
-                f"{incognito} : « Votre objectif sera de le \033[1;31mTuER\033[0m »",
+                f"{incognito} : « Votre objectif sera de le {red}TuER\033[0m »",
                 f"{incognito} : « Faites vos preuves et vous deviendrez un héros national »",
                 f"{incognito} : « Choisissez une arme. »"))
 
@@ -239,7 +211,7 @@ def launch_starters_scene(data):
     starters.remove(weapon_slot_1)
     play_sound("bell")
 
-    slow_print((f"\n{incognito} : « Ah, j'ai oublié de préciser que vous pourrez faire une attaque combinée... »",
+    quick_print((f"\n{incognito} : « Ah, j'ai oublié de préciser que vous pourrez faire une attaque combinée... »",
                 f"{incognito} : « Donc vous aurez besoin de deux autres armes supplémentaires. »"))
 
     print("\n <2e arme>")
@@ -252,7 +224,7 @@ def launch_starters_scene(data):
     starters.remove(weapon_slot_3)
     play_sound("bell")
 
-    slow_print((f"\n{incognito} : « Je te donne un dernier objet : un sac dans lequel tu devras mettre tes trouvailles »",
+    quick_print((f"\n{incognito} : « Je te donne un dernier objet : un sac dans lequel tu devras mettre tes trouvailles »",
                f"{incognito} : « Tu n'es pas le premier à t'en servir c'est pour ça qu'il y a quelques déchets dedans »"))
     play_sound("bell")
     data["player"]["objects_inv"] =  {"object_slot_1":{"name": OBJ_STARTER.name, "effect": OBJ_STARTER.effect, "value": OBJ_STARTER.value}}
@@ -261,7 +233,7 @@ def launch_starters_scene(data):
 
     if data.get("cheat", False):
         print(f"\n{incognito} : « Tiens tiens tiens... tu as triché ? Bah tiens chacal »")
-        input()
+        wait_input()
         selected_weapons.append(CHEAT_WEAPON)
         play_sound("bell")
 
@@ -283,7 +255,7 @@ def launch_starters_scene(data):
     stop_sound(2000)
 
     print(f"{incognito} : « Attention un ennemi a été repéré ! »")
-    input()
+    wait_input()
 
 def launch_tuto_fight(player):
     tuto_enemy = Monster("Enemy gez", 200, Weapon("Epée de l'ennemi", 20, 0, 0, 0), 1)
@@ -298,7 +270,7 @@ def launch_keep_fighting(difficulty, player, used_monsters):
 
     if is_bossfight:
         print("BOSSFIGHT TXT")
-        input()
+        wait_input()
         boss_name = f"BOSS {random.choice(BOSS_NAMES).upper()}"
         player_legend = sum(i.power for i in player.weapons)
         boss_pv = int(player.max_pv*BOSS_PV)
@@ -310,7 +282,7 @@ def launch_keep_fighting(difficulty, player, used_monsters):
         player.mana = player.max_mana//2
 
     else:
-        print("\nTu t'enfonces dans les ténèbres à la recherche d'une réponse...")
+        print(random.choice(RANDOM_LINES))
 
         available_enemies = []
         for i in MONSTER_NAMES:
@@ -326,9 +298,9 @@ def launch_keep_fighting(difficulty, player, used_monsters):
         new_enemy_pv = int(200*MONSTER_SCALE**difficulty)
         new_weapon_name = random.choice(WEAPON_NAMES)
         new_weapon_power = int(10*MONSTER_SCALE**difficulty)
+        new_weakness = random.choice(list(WEAKNESSES.keys()))
 
-        new_enemy = Monster(new_enemy_name, new_enemy_pv, Weapon(new_weapon_name, new_weapon_power, 0, 0, 0), 1)
-        # FAIRE DES RANDOMS WEAKNESSES !!!!!!!!!!!!!
+        new_enemy = Monster(new_enemy_name, new_enemy_pv, Weapon(new_weapon_name, new_weapon_power, 0, 0, 0), new_weakness)
 
         player.max_pv = int(100*PLAYER_SCALE**difficulty)
         player.pv = player.max_pv
@@ -341,7 +313,7 @@ def launch_keep_fighting(difficulty, player, used_monsters):
         if is_bossfight:
             print("\nTu as battu un haut offier de l'espace mental Roi")
             print("Son arme a l'air forte...")
-            input()
+            wait_input()
             clear_console()
             play_sound("bell")
 
@@ -365,17 +337,17 @@ def launch_keep_fighting(difficulty, player, used_monsters):
                 print(f"\n{b_weapon} jetée")
                 play_sound("bell")
 
-            input()
+            wait_input()
 
 
         else:
             if len(player.inventory) >= MAX_INV_SIZE:
                 print("Inventaire plein, pas de loot")
-                input()
+                wait_input()
             else:
                 loot = enemy_loot(difficulty,player.inventory)
                 player.inventory.append(loot)
                 print(f"""\n L'ennemi a laissé tomber "{loot.name}" (Effet: {loot.effect} {loot.value})""")
-                input()
+                wait_input()
 
     return result

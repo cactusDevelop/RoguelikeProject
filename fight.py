@@ -1,6 +1,5 @@
 
-import time
-import random
+import random, json
 
 from global_func import *
 from musics import play_sound, stop_sound
@@ -11,6 +10,9 @@ FADE_OUT = 3500 #ms
 MAX_ANALYSIS = 8
 MISS_CHANCE = 0.05
 
+with open("JSON/cst_data.json", "r", encoding="utf-8") as read_file:
+    cst = json.load(read_file)
+    WEAKNESSES = cst.get("weaknesses", {})
 
 
 class Fight:
@@ -189,16 +191,29 @@ class Fight:
             print("\n".join(self.txt_buffer))
             print()
 
-    def find_weakness(self): #Attention la faiblesse n'est activée qu'à l'appel de la fct, après si c fait exprès...
-        if self.enemy.weakness == 0:
-            return "Que dalle"
-        if self.enemy.weakness == 1:
-            self.enemy.weapon.power = max(self.enemy.weapon.power-10, 0)
-            self.weakness_turns_remaining = 4
-            return "Enemy affaibli (-10 Att) pour 3 tours"
+    def find_weakness(self):
+        weakness = str(self.enemy.weakness)
 
-        print("[DEBUG] Big Error : le num de faiblesse n'existe pas")
-        return None
+        if weakness == 0 or weakness not in WEAKNESSES:
+            return "Que dalle"
+
+        weakness_data = WEAKNESSES[weakness]
+        w_type = weakness_data["type"]
+        w_value = weakness_data["value"]
+        w_duration = weakness_data["duration"]
+        w_message = weakness_data["message"]
+
+        if w_type == "attack":
+            self.enemy.weapon.power = max(self.enemy.weapon.power - w_value, 0)
+            self.weakness_turns_remaining = w_duration + 1
+            return w_message
+
+        elif w_type == "heal_player":
+            self.player.heal(w_value)
+            return w_message
+
+        else:
+            return "[DEBUG] Big Error : la faiblesse n'existe pas"
 
 
     def nav(self, player):
@@ -236,7 +251,8 @@ class Fight:
                     self.display_status()
                     print("="*10 + "Weapons" + "="*10)
                     for i, option in enumerate(player.weapons):
-                        print(f"[{i+1}] {option.name} (Att:{option.power}, Ult:{option.stim}, Mana:{option.mana})")
+                        offset = " " * (max(len(w.name) for w in player.weapons)+2-len(option.name))
+                        print(f"[{i+1}] {option.name}{offset}(Att:{option.power}, Ult:{option.stim}, Mana:{option.mana})")
                     print(f"[{len(player.weapons)+1}] Retour")
                 def conf(action_input):
                     return action_input.isdigit() and 0 < int(action_input) <= len(player.weapons)+1
@@ -252,6 +268,7 @@ class Fight:
                 def to_display():
                     self.display_status()
                     print("=" * 10 + "Objects" + "=" * 10)
+
                     for i, option in enumerate(player.inventory):
                         effect = "Objet généré aléatoirement" if option.effect == "new_obj" \
                             else f"Soin de {option.value} PV" if option.effect == "heal" \
@@ -259,7 +276,10 @@ class Fight:
                             else f"Bouclier de {option.value} PV" if option.effect == "shield" \
                             else f"Charge de {option.value} MANA" if option.effect == "mana_charge" \
                             else "[DEBUG] Effet défaillant"
-                        print(f"[{i+1}] {option.name} (Effet: {effect})")
+
+                        offset = " " * (max(len(o.name) for o in player.inventory)+2-len(option.name))
+                        print(f"[{i+1}] {option.name}{offset}(Effet: {effect})")
+
                     print(f"[{len(player.inventory) + 1}] Retour")
                 def conf(action_input):
                     return action_input.isdigit() and 0 < int(action_input) <= len(player.inventory)+1
