@@ -1,14 +1,14 @@
 {
     "player": {
         "nickname": "Joueur44",
-        "pv": 60,
-        "max_pv": 100,
-        "stim": 200,
-        "max_stim": 200,
+        "pv": 20,
+        "max_pv": 132,
+        "stim": 264,
+        "max_stim": 264,
         "mana": 10,
         "max_mana": 10,
-        "current_level": 1,
-        "score": 100,
+        "current_level": 3,
+        "score": 160,
         "weapons_inv": {
             "weapon_slot_1": {
                 "name": "Ielstrr",
@@ -26,10 +26,10 @@
             },
             "weapon_slot_3": {
                 "name": "Yvys",
-                "power": 80,
+                "power": 130,
                 "stim": 80,
                 "mana": 5,
-                "buff_count": 0
+                "buff_count": 2
             }
         },
         "objects_inv": {
@@ -37,9 +37,22 @@
                 "name": "Sac des abîmes",
                 "effect": "new_obj",
                 "value": 0
+            },
+            "object_slot_2": {
+                "name": "Vol-au-vent",
+                "effect": "mana_ult_charge",
+                "value": 8
+            },
+            "object_slot_3": {
+                "name": "Petite popo de soin",
+                "effect": "heal",
+                "value": 82
             }
         }
     },
-    "used_monsters": [],
+    "used_monsters": [
+        "Loulou Croix-V-Baton",
+        "Le reuf de Dimitri"
+    ],
     "cheat": null
 }

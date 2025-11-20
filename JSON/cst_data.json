@@ -45,7 +45,9 @@
     "Tu t'enfonces dans les ténèbres à la recherche de réponses...",
     "Tu t'allumes une clope et te rappelles que tu ne fumes pas...",
     "Tu sous-estimes le temps de prépa du prochain labo...",
-    "Tu te demandes combien de temps le roi tiendra-t-il..."
+    "Tu te demandes combien de temps le roi tiendra-t-il...",
+    "Tu t'étonne de la simplicité du cortex cérébrale de votre hôte",
+    "Tutedigire, tuteu ridiges euh..."
   ],
   "weaknesses": {
     "0": {
@@ -62,7 +64,7 @@
       "type": "heal",
       "value": 10,
       "duration": 0,
-      "message": "Ennemi te guéri ?!"
+      "message": "Ennemi te guéri 10 PV ?!"
     },
     "3": {
       "type": "attack",
