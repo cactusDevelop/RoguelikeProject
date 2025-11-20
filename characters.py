@@ -4,6 +4,8 @@ from musics import play_sound
 
 
 ULT_COEFFICIENT = 5
+red = "\033[1;31m"
+cyan = "\033[1;36m"
 
 class Character:
     def __init__(self, name: str, pv: int, max_pv:int):
@@ -17,7 +19,7 @@ class Character:
             return target.calc_dmg(self.weapon.power, self.weapon.name)
         else:
             target.pv = max(target.pv - self.weapon.power, 0)
-            print(f""""{self.weapon.name}" inflige {self.weapon.power} dégats à "{target.name}" ({target.pv} PV restants)""")
+            print(f"""Arme "{cyan + self.weapon.name}\033[0m" inflige {self.weapon.power} dégats à {red + target.name}\033[0m ({target.pv} PV restants)""")
             return None
 
 
@@ -83,16 +85,16 @@ class Player(Character):
         if self.shield_pv > 0:
             if damage >= self.shield_pv:
                 self.shield_pv = 0
-                print(f""""{weapon_name}" détruit votre Bouclier""")
-                play_sound("shield-drop")
+                print(f"""Arme "{red + weapon_name}\033[0m" détruit votre Bouclier""")
+                play_sound("drop-shield")
             else:
                 self.shield_pv = self.shield_pv - damage
-                print(f""""{weapon_name}" inflige {damage} dégats au bouclier ({self.shield_pv} PV bouclier restants)""")
+                print(f"""Arme "{red + weapon_name}\033[0m" inflige {damage} dégats au bouclier ({cyan + str(self.shield_pv)}\033[0m PV bouclier restants)""")
                 play_sound("shield")
 
         else:
             self.pv = max(self.pv - damage, 0)
-            print(f""""{weapon_name}" inflige {damage} dégats à "{self.name}" ({self.pv} PV restants)""")
+            print(f"""Arme "{red + weapon_name}\033[0m" inflige {damage} dégats à "{cyan + self.name}\033[0m" ({self.pv} PV restants)""")
             play_sound("monster-attack")
 
 

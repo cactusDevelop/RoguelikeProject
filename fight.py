@@ -9,6 +9,8 @@ MAX_NAV_ITERATIONS = 30
 FADE_OUT = 2500 #ms
 MAX_ANALYSIS = 8
 MISS_CHANCE = 0.05
+red = "\033[1;31m"
+cyan = "\033[1;36m"
 
 with open("JSON/cst_data.json", "r", encoding="utf-8") as read_file:
     cst = json.load(read_file)
@@ -27,8 +29,7 @@ class Fight:
 
 
     def fight_loop(self):
-        print("Un monstre apparait et engage le combat")
-        print(f"\n{self.player.name} engage le combat contre \033[1;32m{self.enemy.name}\033[0;0m")
+        print(f"\n{cyan}{self.player.name}\033[0m engage le combat contre {red}{self.enemy.name}\033[0;0m")
         wait_input()
         play_sound("fight", True)
 
@@ -76,7 +77,7 @@ class Fight:
 
 
     def player_turn(self):
-        self.player.mana += 1
+        self.player.mana = min(self.player.mana + 1, self.player.max_mana)
 
         instruction, value = self.nav(self.player)
 
@@ -86,7 +87,7 @@ class Fight:
 
             if self.player.mana < equiped_w.mana:
                 print(f"Mana insuffisant {self.player.mana}/{equiped_w.mana}")
-                input()
+                wait_input()
                 return None
 
             self.player.mana -= equiped_w.mana
@@ -106,7 +107,7 @@ class Fight:
         elif instruction == "Analysis":
             if self.analysis_count <= 0:
                 print("T'as trop spam la passivité mon gars")
-                input()
+                wait_input()
                 return None
 
             self.analysis_count-=1
@@ -126,16 +127,13 @@ class Fight:
             return None
 
 
-    def enemy_turn(self): # ENEMY IA PLS
-        #clear_console()
-        print("\n"+"="*5 + "| \033[31m" + self.enemy.name + "'s turn"+"\033[0m |" + "="*(get_width()-9-len(self.enemy.name)))
+    def enemy_turn(self):
+        print("\n"+"="*5 + f"| {red}" + self.enemy.name + "'s turn"+"\033[0m |" + "="*(get_width()-16-len(self.enemy.name)))
+        print()
 
-        if random.random() < MISS_CHANCE:
+        if random.random() < MISS_CHANCE or self.enemy.weapon.power == 0:
             play_sound("miss-swing")
-            print(f""""{self.enemy.name}" rate lamentablement son attaque""")
-        elif self.enemy.weapon.power == 0:
-            self.enemy.attack(self.player)
-            play_sound("miss-swing")
+            print(f""""{red+ self.enemy.name}\033[0m" rate lamentablement son attaque""")
         else:
             self.enemy.attack(self.player)
 
@@ -164,23 +162,26 @@ class Fight:
         p_mana_ratio = self.player.mana * 10 // self.player.max_mana
         left_offset = 2
 
-        line_0 = f" NIVEAU {self.level}"
-        line_1 = " "*left_offset + self.player.name.upper() + " "*(get_width()//2-len(self.player.name))
-        line_1 += self.enemy.name.upper()
-        line_2 = " "*left_offset + "█"*p_pv_ratio + "_"*(10-p_pv_ratio) + " | " + str(self.player.pv) + "/" + str(self.player.max_pv) +" PV"
+        line_0 = f"\n NIVEAU {self.level}"
+        line_1 = "=" * 5 + f"| {cyan}" + self.player.name + "'s turn" + "\033[0m |" + "="*(get_width()-16-len(self.player.name))
+        line_2 = " "*left_offset + cyan + self.player.name.upper() + "\033[0m" + " "*(get_width()//2-len(self.player.name))
+        line_2 += red + self.enemy.name.upper() + "\033[0m"
+        line_3 = " "*left_offset + "█"*p_pv_ratio + "_"*(10-p_pv_ratio) + " | " + str(self.player.pv) + "/" + str(self.player.max_pv) +" PV"
         if self.player.shield_pv > 0:
-            line_2 += f" [Bouclier {self.player.shield_pv}PV]"
-        line_2 += " "*(get_width()//2-len(line_2)+left_offset)
-        line_2 += "█"*e_pv_ratio + "_"*(10-e_pv_ratio) + " | " + str(self.enemy.pv) + "/" + str(self.enemy.max_pv) +" PV"
-        line_3 = " "*left_offset + "█"*p_stim_ratio + "_"*(10-p_stim_ratio) + " | " + str(self.player.stim) + "/" + str(self.player.max_stim) +" ULT"
-        line_4 = " "*left_offset + "█"*p_mana_ratio + "_"*(10-p_mana_ratio) + " | " + str(self.player.mana) + "/" + str(self.player.max_mana) +" MANA"
+            line_3 += f" [Bouclier {self.player.shield_pv}PV]"
+        line_3 += " "*(get_width()//2-len(line_3)+left_offset)
+        line_3 += "█"*e_pv_ratio + "_"*(10-e_pv_ratio) + " | " + str(self.enemy.pv) + "/" + str(self.enemy.max_pv) +" PV"
+        line_4 = " "*left_offset + "█"*p_stim_ratio + "_"*(10-p_stim_ratio) + " | " + str(self.player.stim) + "/" + str(self.player.max_stim) +" ULT"
+        line_5 = " "*left_offset + "█"*p_mana_ratio + "_"*(10-p_mana_ratio) + " | " + str(self.player.mana) + "/" + str(self.player.max_mana) +" MANA"
 
         print(line_0)
-        print()
         print(line_1)
+        print()
         print(line_2)
         print(line_3)
         print(line_4)
+        print(line_5)
+
         if self.weakness_turns_remaining > 0:
             print(" "*left_offset + f" -Analysis actif pour {self.weakness_turns_remaining} tour(s)")
         else:
@@ -194,7 +195,7 @@ class Fight:
     def find_weakness(self):
         weakness = str(self.enemy.weakness)
 
-        if weakness == 0 or weakness not in WEAKNESSES:
+        if weakness == "0" or weakness not in WEAKNESSES:
             return "Que dalle"
 
         weakness_data = WEAKNESSES[weakness]
@@ -208,7 +209,7 @@ class Fight:
             self.weakness_turns_remaining = w_duration + 1
             return w_message
 
-        elif w_type == "heal_player":
+        elif w_type == "heal":
             self.player.heal(w_value)
             return w_message
 
@@ -229,9 +230,8 @@ class Fight:
 
             if current_pos == "Nav":
                 def to_display():
-                    print("\n" + "=" * 5 + "| \033[1;36m" + self.player.name + "'s turn" + "\033[0m |" + "="*(get_width()-9-len(self.player.name)))
-
                     self.display_status()
+
                     print("=" * 10 + "Menu" + "=" * 10)
                     for i, option in enumerate(nav_menu):
                         if option == "Analysis":
@@ -249,7 +249,7 @@ class Fight:
             elif current_pos == "Weapons":
                 def to_display():
                     self.display_status()
-                    print("="*10 + "Weapons" + "="*10)
+                    print("="*15 + "Weapons" + "="*15)
 
                     max_len = max(len(w.name.replace('\033[0;93m', '').replace('\033[0m', '')) for w in player.weapons)
                     for i, option in enumerate(player.weapons):

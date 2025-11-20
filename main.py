@@ -194,7 +194,8 @@ if __name__ == "__main__":
                 input("\nAucune partie sauvegardée... ¯\_(ツ)_/¯")
                 continue
             print(f"\nPartie Trouvée: ({get_save()['nickname']} - Niveau {get_save()['level']})")
-            input("Let's go ! >")
+            print("Let's go ! > ", end="")
+            wait_input()
             run_fight_loop()
         elif menu_to == 3:
             show_hs()

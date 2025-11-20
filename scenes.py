@@ -128,7 +128,7 @@ def launch_cutscene(data):
         "                       ░                                                                                              ",
         "\n",
         "\033[0m"))
-    slow_print(title, 0.2)
+    slow_print(title, max(random.gauss(0.2,0.06), 0))
     wait_input()
 
     clear_console()
@@ -263,8 +263,8 @@ def launch_starters_scene(data):
 
     # DEFAULT STATS
     data["player"]["pv"] = data["player"]["max_pv"] = 100
-    data["player"]["stim"] = 300
-    data["player"]["max_stim"] = 500
+    data["player"]["stim"] = 100
+    data["player"]["max_stim"] = 200 # Attention ce n'est pas pris en compte ici mais dans le scale d'ult et mana
     data["player"]["mana"] = data["player"]["max_mana"] = 10
 
     stop_sound(2000)

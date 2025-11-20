@@ -23,13 +23,23 @@ def slow_print(txt: tuple, delay: float):
 
 def solid_input(conf, to_display):
     to_display()
-    action_input = input(" > ").strip()
+
+    try:
+        action_input = input(" > ").strip()
+        action_input = ''.join(char for char in action_input if ord(char) < 128)
+    except: # Tout ça pour ²
+        action_input = ""
 
     while not conf(action_input):
         clear_console()
         to_display()
         print("\033[3m\nValeur invalide...\033[0m")
-        action_input = input(" > ").strip()
+
+        try:
+            action_input = input(" > ").strip()
+            action_input = ''.join(char for char in action_input if ord(char) < 128)
+        except:  # Tout ça pour ²
+            action_input = ""
 
     return action_input.lower()
 
