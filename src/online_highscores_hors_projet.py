@@ -21,6 +21,7 @@
 """
 Système de highscores en ligne via GitHub - VERSION SÉCURISÉE
 """
+import time
 
 import requests
 import json
@@ -31,7 +32,7 @@ import os
 # CHARGEMENT SÉCURISÉ DE LA CONFIGURATION
 def load_config():
     """Charge la config depuis config.json (ignoré par git)"""
-    config_path = "JSON/config.json"
+    config_path = "../JSON/config.json"
 
     if not os.path.exists(config_path):
         print("[INFO] Aucune configuration trouvée - Mode local uniquement")
@@ -57,7 +58,7 @@ CONFIG = load_config()
 # Si pas de config, les fonctions fonctionneront en mode local uniquement
 GITHUB_TOKEN = CONFIG.get("github_token") if CONFIG else None
 GITHUB_REPO = CONFIG.get("github_repo") if CONFIG else None
-FILE_PATH = "JSON/highscores.json"
+FILE_PATH = "../JSON/highscores.json"
 
 API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{FILE_PATH}" if GITHUB_REPO else None
 
