@@ -306,6 +306,8 @@ def launch_keep_fighting(difficulty, player, used_monsters):
         boss_weapon = Weapon("Arme très puissante", boss_power, 0, 0, 0)
         new_enemy = Monster(boss_name, boss_pv, boss_weapon, 0)
 
+        player.max_mana = int(PLAYER_I_MANA*PLAYER_SCALE**difficulty)
+        player.max_pv = int(PLAYER_I_PV*PLAYER_SCALE**difficulty)
         player.pv = int(player.max_pv//(4/3))
         player.mana = player.max_mana//2
 
