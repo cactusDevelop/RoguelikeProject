@@ -12,6 +12,9 @@ from scenes import launch_cutscene, launch_starters_scene, launch_tuto_fight, ga
 
 CHEAT_CODE = "zahoe"
 
+
+#os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+
 # CACHER LES MESSAGES D'ERREUR (parce que c moche)
 """import sys
 

@@ -8,7 +8,7 @@ SFX issus de Pixabay
 """
 
 import os, random, pygame
-# os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1'
+
 
 NOMBRE_CHANNEL = 10
 
