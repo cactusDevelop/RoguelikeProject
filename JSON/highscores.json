@@ -7,6 +7,11 @@
             "level": 35
         },
         {
+            "nickname": "zebi",
+            "score": 3900,
+            "level": 20
+        },
+        {
             "nickname": "Zizi",
             "score": 2820,
             "level": 17
@@ -45,11 +50,6 @@
             "nickname": "noob",
             "score": 900,
             "level": 10
-        },
-        {
-            "nickname": "DEV",
-            "score": 400,
-            "level": 6
         }
     ]
 }
