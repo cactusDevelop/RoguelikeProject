@@ -91,20 +91,21 @@ class Player(Character):
         """
         self.pv = min(self.pv+x, self.max_pv)
 
-    def use_obj(self, obj_position):# AJouter enemy=None ici aussi
+    def use_obj(self, obj_position, max_inv_size=6):# AJouter enemy=None ici aussi
         """
         stocke le numéro de place de l'objet dans l'inventaire dans la variable obj
+        :param max_inv_size: Nbre de slots pour objets
         :param obj_position: objet à utiliser
-        :return: False si l'objet ne peut pas être utiliser
+        :return: False si l'objet ne peut pas être utilisé
         """
         if 0 <= obj_position < len(self.inventory):
             obj = self.inventory[obj_position]
 
-            if obj.effect == "new_obj" and len(self.inventory) >= 6:
+            if obj.effect == "new_obj" and len(self.inventory) >= max_inv_size:
                 print("Inventaire plein...")
                 return False
             else:
-                check = obj.use(self)
+                check = obj.use(self, max_inv_size)
                 if obj.effect != "new_obj" and check:
                     self.inventory.pop(obj_position) # pop or remove ?
                 return True if check is not False else False
@@ -148,9 +149,9 @@ class Monster(Character):
     def __init__(self, name: str, pv: int, weapon, weakness=0):
         """
         :param name: nom du monstre
-        :param pv: pv du montre
+        :param pv: pv du monstre
         :param weapon: arme du monstre
-        :param weakness: faiblesse du montre
+        :param weakness: faiblesse du monstre
         """
         super().__init__(name, pv, pv)
         self.weapon = weapon

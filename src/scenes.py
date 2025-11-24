@@ -7,7 +7,7 @@ from musics import play_sound, stop_sound
 from characters import Monster
 from weapon import Weapon, gen_boss_weapon
 from object import Object, enemy_loot, MAX_INV_SIZE
-from fight import Fight, MAX_ANALYSIS
+from fight import Fight, MAX_ANALYSIS, MAX_WEAPON_SLOTS
 from global_func import *
 from online_highscores_hors_projet import save_score_with_fallback
 
@@ -21,7 +21,7 @@ blue = "\033[1;94m"
 
 #starters = generate_starters() A cause de random.seed()
 OBJ_STARTER = Object("Sac des abîmes", "new_obj", 0)
-CHEAT_WEAPON = Weapon("Mange tes morts", 999, 999, 0, 0)
+CHEAT_WEAPON = Weapon("Mange tes morts", 9999, 9999, 0, 0)
 
 # EQUILIBRAGE
 PLAYER_I_PV = 100
@@ -93,7 +93,7 @@ def game_over(data,x:int,des:str):
     #dump_json(data)
     clear_save()
     input("\nAppuyez sur ENTER pour revenir à l'écran d'accueil")
-    return False # Parce que j'ai fait running = game_over() mais est-ce vrm utile ??? on vera si je créé une class Game
+    return False
 
 
 # SCENES
@@ -159,7 +159,7 @@ def launch_cutscene(data):
         "|                                                                 |",
         "|   Vous avez eu l’exceptionnellement incroyable chance           |",
         "|   d’être sélectionné pour prendre part au programme *XXXXX*.    |",
-        "|                                                                 |")), 0.2)
+        "|                                                                 |")), 0.05)
     wait_input()
     play_sound("paper-rustle")
     slow_print(center_txt((
@@ -167,14 +167,14 @@ def launch_cutscene(data):
         "|   - Toute atteinte à la sécurité du participant durant le       |",
         "|   programme relève de son entière responsabilité.               |",
         "|   - Le participant n’est pas autorisé à interrompre le          |",
-        "|   programme avant la fin.                                       |")), 0.2)
+        "|   programme avant la fin.                                       |")), 0.05)
     wait_input()
     play_sound("paper-rustle")
     slow_print(center_txt((
         "|                                                                 |",
         "|   Je soussigné (nom, prénom)...............................     |",
         "|   accepte en toute connaissance de cause, les conditions        |",
-        "|   présentée cfr supra.                                          |",
+        "|   présentées cfr supra.                                          |",
         "|                                                                 |",
         "|_________________________________________________________________|")), 0.05)
 
@@ -215,7 +215,7 @@ def launch_cutscene(data):
             "Et vous perdez connaissance."))
         print("...")
         play_sound("teleport")
-        time.sleep(2)
+        time.sleep(1)
 
         return True
 
@@ -226,7 +226,7 @@ def launch_starters_scene(data):
     nickname = data["player"]["nickname"]
 
     quick_print((
-                f"\n {cyan + nickname}\033[0m : « ... Qu’est que... Où suis-je tombé ? »",
+                f"\n {cyan + nickname}\033[0m : « ... Qu’est-ce que... Où suis-je tombé ? »",
                 "\nDevant vous, se trouvent plusieurs armes difformes éparpillées sur le sol.",
                 f"\n{incognito} : « Bienvenue dans la tête du Roi, agent {nickname} »",
                 f"{incognito} : « Votre objectif sera de le {red}TuER\033[0m »",
@@ -279,7 +279,7 @@ def launch_starters_scene(data):
     # DEFAULT STATS
     data["player"]["pv"] = data["player"]["max_pv"] = 100
     data["player"]["stim"] = 100
-    data["player"]["max_stim"] = 200 # Attention ce n'est pas pris en compte ici mais dans le scale d'ult et mana
+    data["player"]["max_stim"] = 200 # Attention ce n'est pas pris en compte ici, mais dans le scale d'ult et mana
     data["player"]["mana"] = data["player"]["max_mana"] = 10
 
     stop_sound(2000)
@@ -289,17 +289,19 @@ def launch_starters_scene(data):
 
 def launch_tuto_fight(player):
     tuto_enemy = Monster("Tuto", 200, Weapon("Épée classique", 10, 0, 0, 0), 1)
-    result = Fight(player, tuto_enemy, 0, True).fight_loop()
+    result = Fight(player, tuto_enemy, 0, 4, True).fight_loop()
     return result
 
-def launch_keep_fighting(difficulty, player, used_monsters, max_analysis=MAX_ANALYSIS):
+def launch_keep_fighting(difficulty, player, used_monsters, max_analysis=MAX_ANALYSIS, max_inv_size=MAX_INV_SIZE, max_weapon_slots=MAX_WEAPON_SLOTS):
     """
 
-    :param max_analysis:
-    :param difficulty:
-    :param player:
-    :param used_monsters:
-    :return:
+    :param max_weapon_slots: Nbre de slots armes
+    :param max_inv_size: Nbre de slots obj
+    :param max_analysis: Nbre d'analyses
+    :param difficulty: Niveau atteint
+    :param player: Instance joueur
+    :param used_monsters: Noms de monstre utilisés
+    :return: tuple(result, max_analysis, max_inv_size)
     """
     clear_console()
     stop_sound(1000)
@@ -351,7 +353,7 @@ def launch_keep_fighting(difficulty, player, used_monsters, max_analysis=MAX_ANA
         player.max_stim = int(PLAYER_I_ULT*PLAYER_SCALE**difficulty)
 
     # START FIGHTIN'
-    result = Fight(player, new_enemy, difficulty).fight_loop()
+    result = Fight(player, new_enemy, difficulty, max_analysis).fight_loop(max_inv_size)
 
     if result is True:
         if is_bossfight:
@@ -363,58 +365,62 @@ def launch_keep_fighting(difficulty, player, used_monsters, max_analysis=MAX_ANA
 
             b_weapon = gen_boss_weapon(difficulty)
 
-            def to_display():
-                print("Choisir une arme à jeter :")
-                for i, weapon in enumerate(player.weapons):
-                    print(f"[{i+1}] {weapon.name} (Att: {weapon.power}, Ult: {weapon.stim}, Mana: {weapon.mana}, Buffs: {weapon.buff_count})")
-                print(f"[{len(player.weapons)+1}] {b_weapon.name} (Att: {b_weapon.power}, Ult: {b_weapon.stim}, Mana: {b_weapon.mana}, Buffs: 0)")
-            def conf(action_input):
-                return action_input.isdigit() and 0 < int(action_input) <= len(player.weapons) +1
-
-            choice = int(solid_input(conf, to_display)) - 1
-
-            if choice < len(player.weapons):
-                print(f"""\n"{player.weapons[choice].name}" jetée""")
-                play_sound("bell") # Throw sound better
-                player.weapons[choice] = b_weapon
-            else:
-                print(f"\n{b_weapon.name} jetée")
+            if len(player.weapons) < max_weapon_slots:
+                print(f"""\n Arme "{b_weapon.name}" ajoutée à l'inventaire """)
+                player.weapons.append(b_weapon)
                 play_sound("bell")
+            else:
+                def to_display():
+                    print("Choisir une arme à jeter :")
+                    for j, weapon in enumerate(player.weapons):
+                        print(f"[{j+1}] {weapon.name} (Att: {weapon.power}, Ult: {weapon.stim}, Mana: {weapon.mana}, Buffs: {weapon.buff_count})")
+                    print(f"[{len(player.weapons)+1}] {b_weapon.name} (Att: {b_weapon.power}, Ult: {b_weapon.stim}, Mana: {b_weapon.mana}, Buffs: 0)")
+                def conf(action_input):
+                    return action_input.isdigit() and 0 < int(action_input) <= len(player.weapons) +1
+
+                choice = int(solid_input(conf, to_display)) - 1
+
+                if choice < len(player.weapons):
+                    print(f"""\n"{player.weapons[choice].name}" jetée""")
+                    play_sound("bell") # Throw sound better
+                    player.weapons[choice] = b_weapon
+                else:
+                    print(f"\n{b_weapon.name} jetée")
+                    play_sound("bell")
 
             wait_input()
 
         else:
-            if len(player.inventory) >= MAX_INV_SIZE:
+            if len(player.inventory) >= max_inv_size:
                 print("Inventaire plein, pas de loot")
                 wait_input()
             else:
-                loot = enemy_loot(difficulty,player.inventory)
+                loot = enemy_loot(difficulty, player.inventory)
                 player.inventory.append(loot)
                 print(f"""\n L'ennemi a laissé tomber "{loot.name}" (Effet: {loot.effect} {loot.value})""")
                 wait_input()
 
-        max_analysis = offer_upgrades(player, difficulty, max_analysis)
+        max_analysis, max_inv_size, max_weapon_slots = offer_upgrades(player, max_analysis, max_inv_size, max_weapon_slots)
 
-    return result, max_analysis
+    return result, max_analysis, max_inv_size, max_weapon_slots
 
-def offer_upgrades(player, level, max_analysis):
+def offer_upgrades(player, max_analysis, max_inv_size, max_weapon_slots):
     """
     La fonction de Progression demandée dans le cahier des charges
+    :param max_weapon_slots: Nbre de slots d'armes actuel
+    :param max_inv_size: Nbre de slots à obj actuel
     :param player: Instance joueur
-    :param level: Niveau atteint
     :param max_analysis: Max d'analyses actuel
-    :return: max_analysis (joueur mis à jour)
+    :return: tuple(max_analysis, max_inv_size) (joueur mis à jour)
     """
 
     clear_console()
     play_sound("bell")
 
     def to_display():
-        weapon_slots = len(player.weapons)
-        obj_slots = len(player.inventory)
         print("\n" + "="*20 + "| AMÉLIORATION |" + "="*20)
-        print(f"[1] Capacité d'armes +1 ({weapon_slots} -> {weapon_slots+1})")
-        print(f"[2] Capacité d'objets +1 ({obj_slots} -> {obj_slots+1})")
+        print(f"[1] Capacité d'armes +1 ({max_weapon_slots} -> {max_weapon_slots+1})")
+        print(f"[2] Capacité d'objets +1 ({max_inv_size} -> {max_inv_size+1})")
         print(f"[3] Capacité d'analyses +2 ({max_analysis} -> {max_analysis+2})")
     def conf(action_input):
         return action_input.isdigit() and 0 < int(action_input) <= 3
@@ -423,16 +429,17 @@ def offer_upgrades(player, level, max_analysis):
     if choice == 1:
         print("\nSlot d'arme supplémentaire !")
         wait_input()
-        return max_analysis
+        return max_analysis, max_inv_size, max_weapon_slots + 1
 
     elif choice == 2:
-        import object as obj
         print("\nSlot d'objet supplémentaire !")
-        obj.MAX_INV_SIZE += 1
         wait_input()
-        return max_analysis
+        return max_analysis, max_inv_size + 1, max_weapon_slots
 
     elif choice == 3:
         print("\nNombre d'analyses augmenté !")
         wait_input()
-        return max_analysis + 2
+        return max_analysis + 2, max_inv_size, max_weapon_slots
+    else:
+        print("[DEBUG] Erreur dans la fonction conf(action_input)")
+        return "gdsofusykgeluqs"

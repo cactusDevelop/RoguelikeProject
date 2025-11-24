@@ -1,33 +1,40 @@
 {
     "player": {
-        "nickname": "Joueur27",
-        "pv": 100,
-        "max_pv": 100,
-        "stim": 100,
-        "max_stim": 200,
+        "nickname": "Testeurs fous",
+        "pv": 127,
+        "max_pv": 282,
+        "stim": 565,
+        "max_stim": 565,
         "mana": 10,
         "max_mana": 10,
-        "current_level": 0,
-        "score": 0,
+        "current_level": 8,
+        "score": 660,
         "weapons_inv": {
             "weapon_slot_1": {
-                "name": "Deiy",
+                "name": "Fsikqr",
+                "power": 166,
+                "stim": 120,
+                "mana": 4,
+                "buff_count": 3
+            },
+            "weapon_slot_2": {
+                "name": "Vpuo",
                 "power": 60,
                 "stim": 90,
                 "mana": 5,
                 "buff_count": 0
             },
-            "weapon_slot_2": {
-                "name": "Savdkz",
-                "power": 30,
-                "stim": 100,
-                "mana": 3,
+            "weapon_slot_3": {
+                "name": "Eoynr",
+                "power": 70,
+                "stim": 80,
+                "mana": 5,
                 "buff_count": 0
             },
-            "weapon_slot_3": {
-                "name": "Ueiay",
-                "power": 40,
-                "stim": 100,
+            "weapon_slot_4": {
+                "name": "\u001b[0;93mIMNOC\u001b[0m",
+                "power": 80,
+                "stim": 80,
                 "mana": 4,
                 "buff_count": 0
             }
@@ -37,10 +44,62 @@
                 "name": "Sac des abîmes",
                 "effect": "new_obj",
                 "value": 0
+            },
+            "object_slot_2": {
+                "name": "Petite popo de soin",
+                "effect": "heal",
+                "value": 30
+            },
+            "object_slot_3": {
+                "name": "Vol-au-vent",
+                "effect": "mana_ult_charge",
+                "value": 4
+            },
+            "object_slot_4": {
+                "name": "Grande popo de soin",
+                "effect": "heal",
+                "value": 93
+            },
+            "object_slot_5": {
+                "name": "Carbonade",
+                "effect": "mana_ult_charge",
+                "value": 10
+            },
+            "object_slot_6": {
+                "name": "Buff divin",
+                "effect": "att_boost",
+                "value": 63
+            },
+            "object_slot_7": {
+                "name": "Buff instant",
+                "effect": "att_boost",
+                "value": 68
+            },
+            "object_slot_8": {
+                "name": "P'tit bouclier",
+                "effect": "shield",
+                "value": 23
+            },
+            "object_slot_9": {
+                "name": "Ama-no-Iwato",
+                "effect": "shield",
+                "value": 42
+            },
+            "object_slot_10": {
+                "name": "Buff d'Euler",
+                "effect": "att_mult",
+                "value": 1.43
             }
         }
     },
-    "used_monsters": [],
+    "used_monsters": [
+        "Louis IIV",
+        "Ken le survivant",
+        "Kennus Latinus",
+        "La grd-mère de Dimitri",
+        "Le reuf de Dimitri",
+        "Dimitri"
+    ],
     "cheat": false,
-    "seed": 29997171
+    "seed": 6767677667676676767
 }

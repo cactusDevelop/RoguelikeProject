@@ -59,7 +59,7 @@ def create_weapon(x:int):
 
     if name == "ISA-LIBUR":
         print()  # Faire une animation ascii que prsn ne verra ici
-        print("UNE ARME EXCEPTIONNELLE T'EST ACCORDEE")
+        print("UNE ARME EXCEPTIONNELLE T'EST ACCORDÉE")
         print("LA DIVINITE 61L15 TE PRETE ISA-LIBUR !")
         return Weapon(name, 99999, 99999, 0, 0)
     else:

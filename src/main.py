@@ -72,8 +72,9 @@ def display_menu():
         play_sound("win")
         time.sleep(2.5)
         data["cheat"] = True
-        with open("JSON/active_data.json", "w", encoding="utf-8") as write_file:
-            json.dump(data, write_file, indent=4, ensure_ascii=False)
+
+        with open("JSON/active_data.json", "w", encoding="utf-8") as write_cheat:
+            json.dump(data, write_cheat, indent=4, ensure_ascii=False)
 
         return 1
 
@@ -90,9 +91,9 @@ def show_hs():  # [BALISE ONLINE HIGHSCORES]
 
     try:
         online_scores = get_online_leaderboard()
-        if online_scores is None:  # <- Changez ici : testez explicitement None
+        if online_scores is None:  # Changez ici : testez explicitement None
             print("Aucun score en ligne...")
-        elif len(online_scores) == 0:  # <- Ajoutez ce test pour liste vide
+        elif len(online_scores) == 0:  # Ajoutez ce test pour liste vide
             print("Aucun score enregistré pour le moment...")
         else:
             for rank, entry in enumerate(online_scores, 1):
@@ -172,17 +173,19 @@ def run_intro():
 
 def run_fight_loop():
     from scenes import launch_keep_fighting, game_over
-    from fight import MAX_ANALYSIS
+    from fight import MAX_ANALYSIS, MAX_WEAPON_SLOTS
+    from object import MAX_INV_SIZE
 
     fighting = True
-    max_analysis = MAX_ANALYSIS # pour initialiser seulement
+    max_analysis = MAX_ANALYSIS
+    max_inv_size = MAX_INV_SIZE
+    max_weapon_slots = MAX_WEAPON_SLOTS
 
     while fighting:
         player = get_player_data()
         lvl = data["player"]["current_level"]
-
         u_m = get_used_monsters()
-        fight_result = launch_keep_fighting(lvl, player, u_m)
+        fight_result, max_analysis, max_inv_size, max_weapon_slots = launch_keep_fighting(lvl, player, u_m, max_analysis, max_inv_size, max_weapon_slots)
 
         if fight_result:
             add_score(20 * lvl)

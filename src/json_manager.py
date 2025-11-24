@@ -29,7 +29,7 @@ def save_hs(nickname, score, level):
 with open("JSON/active_data.json", "r", encoding="utf-8") as read_file:
     data = json.load(read_file)
 
-def save_game(new_player, level=1, used_monsters=None):
+def save_game(new_player, level=1, used_monsters=None, max_inv_size=None):
     data["player"]["nickname"] = new_player.name
     data["player"]["pv"] = new_player.pv
     data["player"]["max_pv"] = new_player.max_pv
@@ -39,6 +39,8 @@ def save_game(new_player, level=1, used_monsters=None):
 
     if used_monsters is not None: # Ens vide accepté mais pas None
         data["used_monsters"] = used_monsters
+    if max_inv_size is not None:
+        data["max_inv_size"] = max_inv_size
 
     data["player"]["weapons_inv"].clear()
     for n, weapon in enumerate(new_player.weapons):

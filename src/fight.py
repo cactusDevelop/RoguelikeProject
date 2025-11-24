@@ -29,7 +29,7 @@ class Fight:
         :param player: Instance du joueur
         :param enemy: Instance de l'ennemi ou boss affronté
         :param level: Niveau actuel
-        :param max_analysis: Nombre analyses dispo
+        :param max_analysis: Nombre d'analyses disponibles
         :param tuto: Si premier niveau alors afficher "4) Info"
         """
         self.player = player
@@ -37,12 +37,13 @@ class Fight:
         self.turn_count = 0
         self.weakness_turns_remaining = 0
         self.analysis_count = max_analysis
+        self.max_analysis = max_analysis
         self.level = level
         #self.txt_buffer = []
         self.tuto = tuto
 
 
-    def fight_loop(self):
+    def fight_loop(self, max_inv_size=MAX_INV_SIZE):
         """
         Boucle de combat
         :return: si gagné ou perdu
@@ -56,7 +57,7 @@ class Fight:
 
             self.weakness_turns_remaining = max(self.weakness_turns_remaining - 1, 0)
 
-            p_turn_conclu = self.player_turn()
+            p_turn_conclu = self.player_turn(max_inv_size)
             if p_turn_conclu == "Att":
                 play_sound("sword-sound")
             elif p_turn_conclu == "Obj":
@@ -94,8 +95,8 @@ class Fight:
 
 
 
-    def player_turn(self):
-        instruction, value = self.nav(self.player)
+    def player_turn(self, max_inv_size=MAX_INV_SIZE):
+        instruction, value = self.nav(self.player, max_inv_size)
 
         if instruction == "Armes":
             equiped_w = self.player.weapons[value]
@@ -121,12 +122,12 @@ class Fight:
                     print("Mana insuffisant")
                     wait_input()
                     return None
-                elif len(self.player.inventory) >= MAX_INV_SIZE:
+                elif len(self.player.inventory) >= max_inv_size:
                     print("Inventaire plein")
                     wait_input()
                     return None
 
-            action_check = self.player.use_obj(value)
+            action_check = self.player.use_obj(value, max_inv_size)
             if action_check:
                 self.player.mana = min(self.player.mana + 1, self.player.max_mana)
                 return "Obj"
@@ -272,9 +273,9 @@ class Fight:
             return "[DEBUG] Big Error : la faiblesse n'existe pas"
 
 
-    def nav(self, player):
+    def nav(self, player, max_inv_size=MAX_INV_SIZE):
         can_att = any(i.mana <= player.mana for i in player.weapons)
-        can_obj = len(player.inventory) > 0
+        can_obj = len(player.inventory) > 1
         can_sac = player.mana > 2 and len(player.inventory) < MAX_INV_SIZE
         can_ana = self.analysis_count > 0
 
@@ -301,9 +302,9 @@ class Fight:
                     print("=" * 10 + "Menu" + "=" * 10)
                     for i, option in enumerate(nav_menu):
                         if option == "Analyse":
-                            print(f"[{i + 1}] {option} ({self.analysis_count}/{MAX_ANALYSIS})")
+                            print(f"[{i + 1}] {option} ({self.analysis_count}/{self.max_analysis})")
                         elif option == "Objets":
-                            print(f"[{i + 1}] {option} ({len(player.inventory)}/{MAX_INV_SIZE})")
+                            print(f"[{i + 1}] {option} ({len(player.inventory)}/{max_inv_size})")
                         else:
                             print(f"[{i+1}] {option}")
                 def conf(action_input):

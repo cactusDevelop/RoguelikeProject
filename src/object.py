@@ -1,5 +1,5 @@
 
-from random import choices, randint
+from random import choices, randint, uniform
 
 import json
 
@@ -19,7 +19,7 @@ class Object:
         self.effect = effect
         self.value = value
 
-    def use(self, player): # Ajouter un para enemy=None si un obj a des effets sur enemy
+    def use(self, player, max_inv_size=6): # Ajouter un para enemy=None si un obj a des effets sur enemy
         if self.effect == "new_obj":
             player.mana -= 3
             new_object = rand_obj_inv(player.inventory)
@@ -85,6 +85,7 @@ class Object:
 
 def get_rand_obj(inv, lvl_bonus=False, lvl=1):
     if not OBJECT_BLUEPRINTS: # Fallback si le json merde
+        print("[DEBUG] Je sais même pas si on le verra avec tous les clear_console")
         return Object("Potion par défaut", "heal", 50)
 
     owned_obj = [obj.name for obj in inv if obj.effect != "new_obj"]
@@ -98,12 +99,9 @@ def get_rand_obj(inv, lvl_bonus=False, lvl=1):
             probabilities.append(prob)
 
     if not available_obj:
-        print("[DEBUG] Shouldn't happen")
-        if lvl_bonus:
-            available_obj = OBJECT_BLUEPRINTS
-            probabilities = [objet[4] for objet in OBJECT_BLUEPRINTS]
-        else:
-            return None
+        print("[DEBUG] Tous les objets sont déjà dans l'inventaire")
+        available_obj = OBJECT_BLUEPRINTS
+        probabilities = [objet[4] for objet in OBJECT_BLUEPRINTS]
 
     tot = sum(probabilities)
     norm_prob = [p / tot for p in probabilities]
@@ -113,9 +111,16 @@ def get_rand_obj(inv, lvl_bonus=False, lvl=1):
 
     if lvl_bonus and effect != "mana_ult_charge":
         bonus = int(min_value*OBJECT_SCALE**(lvl/OBJECT_SCALE_SLOWDOWN))
-        value = randint(min_value + bonus, max_value + bonus)
+
+        if effect == "att_mult":
+            value = round(uniform(min_value + bonus/10, max_value + bonus/10), 2)
+        else:
+            value = randint(int(min_value) + bonus, int(max_value) + bonus)
     else:
-        value = randint(min_value, max_value)
+        if effect == "att_mult":
+            value = round(uniform(min_value, max_value), 2)
+        else:
+            value = randint(int(min_value), int(max_value))
 
     return Object(name, effect, value)
 
